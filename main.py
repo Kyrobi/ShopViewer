@@ -8,15 +8,7 @@ import config
 
 app = Flask(__name__)
 
-# app.config['MYSQL_USER'] = "u10829_8QYeQRiC7v"
-# app.config['MYSQL_PASSWORD'] = "tNXogyKWJkoYzdw12GXv0EG0"
-# app.config['MYSQL_HOST'] = "auggie.bloom.host"
-# app.config['MYSQL_DB'] = "s10829_QuickShop"
-# app.config['MYSQL_CURSORCLASS'] = "DictCursor"
-
 # mysql = MySQL(app)
-
-user = "fenhrir"
 
 highestPrice = 0
 lowestPrice = 0 
