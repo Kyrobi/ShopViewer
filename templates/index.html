@@ -6,8 +6,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Balls Website</title>
 </head>
+
+<style>
+    table, th, td {
+    border:1px solid black;
+    }
+    </style>
+
 <body>
-    <p>Data here:</p>
-    <p>Text: {{textVariable}}</p>
+    <p>Showing all shops for all</p>
+
+    <table>
+
+        <tr>
+            <th>Highest Price</th>
+            <th>Average Price</th>
+            <th>Lowest Price</th>
+        </tr>
+
+        <tr>
+            <th>{{highestPrice}}</th>
+            <th>{{averagePrice}}</th>
+            <th>{{lowestPrice}}</th>
+        </tr>
+
+    </table>
+
+
+
+    <!-- <p>Price</p>
+    {% for row in data %}
+
+    <p>{{row[0]}}</p>
+
+    {% endfor %} -->
+
 </body>
 </html>
