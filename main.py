@@ -2,6 +2,10 @@ from flask import Flask
 from flask import render_template # used to interface with html
 from flask_mysqldb import MySQL
 
+from formatter import *
+
+from formatter import listOfItems
+
 import mysql.connector
 import sys
 import config
@@ -30,15 +34,21 @@ def getDatabase():
     #JSON Objects
     #SELECT * FROM s10829_QuickShop.shops WHERE JSON_EXTRACT(owner, "$.owner") = "085c780f-3171-4426-a708-5ea6c7f5321f" LIMIT 10;
     #cursor.execute("SELECT price FROM s10829_QuickShop.shops WHERE JSON_EXTRACT(owner, '$.owner') = '085c780f-3171-4426-a708-5ea6c7f5321f' LIMIT 200")
-    cursor.execute("SELECT price FROM s10829_QuickShop.shops LIMIT 20")
-    cursor.fetchall()
+    
+    
+    # Fetches all the items being sold and puts them into list
+    cursor.execute("SELECT itemConfig FROM s10829_QuickShop.shops LIMIT 20")
+    # cursor.fetchall()
     
     shopList = []
-    
     for shop in cursor:
         shopList.append(shop)
+        # print("\n",shop)
         
-    return shopList
+    setUniqueItems(shopList)
+    
+        
+    # return shopList
 
 
 def getPrice():
@@ -79,11 +89,12 @@ def getPrice():
 
 @app.route("/")
 def index():
-    getPrice()
+    getDatabase()
     return render_template("index.html",
                         highestPrice=highestPrice,
                         lowestPrice=lowestPrice,
-                        averagePrice=averagePrice
+                        averagePrice=averagePrice,
+                        listOfItems=listOfItems
                         )
 
 
