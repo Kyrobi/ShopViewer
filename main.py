@@ -1,22 +1,30 @@
+# Third part libraries
 from flask import Flask
 from flask import render_template # used to interface with html
-from flask_mysqldb import MySQL
-
-from formatter import *
-
-from formatter import listOfItems
-
 import mysql.connector
+
+# Included libraries
+import time
 import sys
 import config
 
-app = Flask(__name__)
+# Own functions
+from LoadItemList import setUniqueItems
 
-# mysql = MySQL(app)
+# Own variables
+from LoadItemList import listOfItems
+
+
+app = Flask(__name__)
 
 highestPrice = 0
 lowestPrice = 0 
 averagePrice = 0
+
+# Keeping track of when to refresh database
+NUMBER_OF_SECONDS_IN_DAY = 86400
+lastRefreshTime = 0
+currentTime = 0
 
 db = mysql.connector.connect(
     host=config.HOST,
@@ -28,17 +36,10 @@ db = mysql.connector.connect(
 cursor = db.cursor()
 
 def getDatabase():
-    cursor = db.cursor()
-
     
-    #JSON Objects
-    #SELECT * FROM s10829_QuickShop.shops WHERE JSON_EXTRACT(owner, "$.owner") = "085c780f-3171-4426-a708-5ea6c7f5321f" LIMIT 10;
-    #cursor.execute("SELECT price FROM s10829_QuickShop.shops WHERE JSON_EXTRACT(owner, '$.owner') = '085c780f-3171-4426-a708-5ea6c7f5321f' LIMIT 200")
-    
-    
+    print("0 length. Inserting")
     # Fetches all the items being sold and puts them into list
     cursor.execute("SELECT itemConfig FROM s10829_QuickShop.shops LIMIT 20")
-    # cursor.fetchall()
     
     shopList = []
     for shop in cursor:
@@ -46,46 +47,32 @@ def getDatabase():
         # print("\n",shop)
         
     setUniqueItems(shopList)
+    #print("List length:", len(listOfItems))
     
+    
+def checkDatabaseQuery():
+    # Simple way to check if we need to query the database again.
+    # Needed incase lots of user visits the website and breaks the database connection
+    global lastRefreshTime
+    global currentTime
+    
+    # Don't reload the list if it's already populated
+    if len(listOfItems) == 0:
+        getDatabase()
+        lastRefreshTime = time.time() # We update the database and set the timer
+        return
         
-    # return shopList
+    currentTime = time.time()
+    
+    # Refresh the database only if 24 hours have passed
+    if (currentTime - lastRefreshTime) > NUMBER_OF_SECONDS_IN_DAY:
+        listOfItems.clear() # Resetting the items list to redo the set
+        getDatabase()
+        lastRefreshTime = currentTime
+        return
 
 
-def getPrice():
-    
-    global averagePrice
-    global highestPrice
-    global lowestPrice
-    
-    totalPrice = 0
-    highestValue = -sys.maxsize - 1 
-    lowestValue = sys.maxsize
-    counter = 0
-    average = 0
-    
-    cursor.execute("SELECT price FROM s10829_QuickShop.shops")
 
-    
-    for i in (cursor):
-        totalPrice += i[0]
-        counter += 1
-        
-        #This will find the highest value
-        if i[0] > highestValue:
-            highestValue = i[0]
-
-        #This will find the lowest value
-        if i[0] < lowestValue:
-            lowestValue = i[0]
-        
-        
-    average = totalPrice / counter
-    averagePrice = round(average, 2)
-    
-    
-    lowestPrice = lowestValue
-    highestPrice = highestValue
-    
 
 @app.route("/")
 def index():
