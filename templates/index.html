@@ -19,27 +19,22 @@
     <table>
 
         <tr>
-            <th>Highest Price</th>
-            <th>Average Price</th>
+            <th>Item Name</th>
             <th>Lowest Price</th>
+            <th>Highest Price</th>
         </tr>
 
+
+        {% for row in listOfItemPrices %}
         <tr>
-            <th>{{highestPrice}}</th>
-            <th>{{averagePrice}}</th>
-            <th>{{lowestPrice}}</th>
+            <td>{{row.getName()}}</td>
+            <td>${{row.getLowestPrice()}}</td>
+            <td>${{row.getHighestPrice()}}</td>
         </tr>
+        {% endfor %}
+        
 
     </table>
-
-
-
-    <p>List of Unique Items:</p>
-    {% for row in listOfItems %}
-
-    <p>{{row}}</p>
-
-    {% endfor %}
 
 </body>
 </html>

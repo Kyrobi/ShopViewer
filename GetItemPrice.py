@@ -1,36 +1,76 @@
+# Standard library
+import sys
 
+# Own variables
+from LoadItemList import listOfItems
+from LoadItemList import listOfAllItems
+from LoadItemList import listOfItemPrices # Contains the price of the items
 
-def getPrice():
+class ItemPrice:
+    def __init__(self, name, lowestPrice, averagePrice, highestPrice):
+        self.name = name
+        self.lowestPrice = lowestPrice
+        self.averagePrice = averagePrice
+        self.highestPrice = highestPrice
     
-    global averagePrice
-    global highestPrice
-    global lowestPrice
+    def getName(self):
+        return self.name
     
-    totalPrice = 0
+    def getLowestPrice(self):
+        return self.lowestPrice
+    
+    def getAveragePrice(self):
+        return self.averagePrice
+    
+    def getHighestPrice(self):
+        return self.highestPrice
+    
+
+# Populates the listOfItemPrices list
+def populatePrice():
+    
+    # Loop through the unique list to see which items we need to calculate for
+    for i in listOfItems:
+        highestPrice = getHighestPrice(i, listOfAllItems)
+        lowestPrice = getLowestPrice(i, listOfAllItems)
+        
+        item = ItemPrice(i ,lowestPrice, 0, highestPrice)
+        listOfItemPrices.add(item)
+    
+    
+def getHighestPrice(itemName, listOfAllItems):
     highestValue = -sys.maxsize - 1 
+    
+    for i in listOfAllItems:
+        if i.getName() == itemName:
+            if i.getPrice() > highestValue:
+                highestValue = i.getPrice()
+                
+    return highestValue
+
+        
+
+def getLowestPrice(itemName, listOfAllItems):
     lowestValue = sys.maxsize
-    counter = 0
-    average = 0
+        
+    for i in listOfAllItems:
+        if i.getName() == itemName:
+            if i.getPrice() < lowestValue:
+                lowestValue = i.getPrice()
+                
+    return lowestValue
+        
     
-    cursor.execute("SELECT price FROM s10829_QuickShop.shops")
+def getAveragePrice(itemName, listOfAllItems):
+    print("sd") 
+    
+# Loop over the unique items list, and find the lowest, highest, and average price for items. Use objects
+# getUniqueItemPrice
 
-    
-    for i in (cursor):
-        totalPrice += i[0]
-        counter += 1
-        
-        #This will find the highest value
-        if i[0] > highestValue:
-            highestValue = i[0]
+# Loop over the UniqueItemPrices, and store them into a sqlite database
 
-        #This will find the lowest value
-        if i[0] < lowestValue:
-            lowestValue = i[0]
-        
-        
-    average = totalPrice / counter
-    averagePrice = round(average, 2)
-    
-    
-    lowestPrice = lowestValue
-    highestPrice = highestValue
+# Fetch the data from the database and display it
+
+# Search function to find data of individual items
+
+# Validate item name function to clean and convert it to proper database query string

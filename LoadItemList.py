@@ -1,22 +1,41 @@
 from typing import List, Set
 
-# Set to prevent duplicates
-# Set of strings
-listOfItems: Set[str] = set()
+class Item:
+    def __init__(self, name, price):
+        self.name = name
+        self.price = price
+        
+    def getPrice(self):
+        return self.price
+    
+    def getName(self):
+        return self.name
+        
+# Keeps track of the unique names of items - no duplicates
+# Used for sorting I guess
+listOfItems: Set[Item] = set() 
+listOfAllItems: List[Item] = [] # Keeps track of all the items
+listOfItemPrices = set() # Stores the prices of the items
 
 # Function to loop over all the items in the database, and put the name of the items in a list
 # getUniqueItems
 def setUniqueItems(itemsList):
     for item in itemsList:
         
-        itemName = formatItemString(item[0])
+        itemName = formatItemString(item[2]) # Index 2 is the item string in the tuple
         itemName = makeProper(itemName)
+        itemPrice = item[1] # Index 1 is the item price
         
-        listOfItems.add(itemName)
+        itemClass = Item(itemName, itemPrice)
+        
+        listOfItems.add(itemName) # Add to Set the name of the item
+        listOfAllItems.append(itemClass)
         
 
 # Formats the item string into the item name
 def formatItemString(itemString):
+    
+    
     
     # Deal with potion format
     if "meta-type: POTION" in itemString:
@@ -26,19 +45,39 @@ def formatItemString(itemString):
         itemName = "Potion: " + potionType
         return itemName
     
-    # Deal with items with display names
-    elif "display-name:" in itemString:
-        itemName = itemString.replace("\n", "").split(" ")[9]
-        return itemName
     
-    elif "type: ENCHANTED_BOOK" in itemString:
+    # Custom formatting for enchanted books
+    if "ENCHANTED_BOOK" in itemString:
         itemName = itemString.replace("\n", "").split(" ")[9]
         enchantment = itemString.replace("\n", "").split(" ")[-2]
         enchantLevel = itemString.replace("\n", "").split(" ")[-1]
         # print("\n", itemName + " " + enchantment + " " + enchantLevel)
-        
-        
         return itemName.replace("_", " ") + " " + enchantment + " " + enchantLevel
+    
+    
+    # Deal with tropical fish buckets
+    if "type: TROPICAL_FISH_BUCKET":
+        itemName = itemString.replace("\n", "").split(" ")[9]
+        return itemName
+
+        
+    
+    if "meta-type: UNSPECIFIC" in itemString:
+        itemName = itemString.replace("\n", "").split(" ")[9]
+        return itemName
+    
+    # For things like shulker boxes / axolotl in buckets
+    if "internal: H4sIAAAAAAAA" in itemString:
+        itemName = itemString.replace("\n", "").split(" ")[9]
+        return itemName
+    
+    # Deal with items with display names
+    if "display-name:" in itemString:
+        itemName = itemString.replace("\n", "").split(" ")[9]
+        return itemName
+    
+    
+    
         
     # Removes the \n from the string, split into list, and
     # take the last value in the list which is the name
@@ -66,7 +105,7 @@ def makeProper(itemName):
         for i in splitString:
             StringBuilder += (i.capitalize() + " ")
         
-        return "Enchant Book - " + StringBuilder
+        return "Enchanted Book - " + StringBuilder
         
         
 
@@ -87,14 +126,3 @@ def makeProper(itemName):
     
     return StringBuilder
     
-
-# Loop over the unique items list, and find the lowest, highest, and average price for items. Use objects
-# getUniqueItemPrice
-
-# Loop over the UniqueItemPrices, and store them into a sqlite database
-
-# Fetch the data from the database and display it
-
-# Search function to find data of individual items
-
-# Validate item name function to clean and convert it to proper database query string
