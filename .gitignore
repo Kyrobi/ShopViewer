@@ -4,3 +4,5 @@ __pycache__/
 /Test
 flask_debug.bat
 scratch.txt
+Price.db
+*.db-journal

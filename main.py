@@ -12,6 +12,7 @@ import re
 # Own functions
 from LoadItemList import setUniqueItems
 from GetItemPrice import populatePrice
+from PriceHistory import createDatabase as createPriceHistoryDatabase
 
 # Own variables
 from LoadItemList import listOfItems
@@ -98,7 +99,6 @@ def checkDatabaseQuery():
 
 @app.route("/", methods=["POST", "GET"])
 def index():
-    checkDatabaseQuery()
     
     # print("Printing price")
     # for i in listOfItemPrices:
@@ -129,4 +129,5 @@ def item(item):
                         )
 
 checkDatabaseQuery() # Populate the database on page load
+createPriceHistoryDatabase() # Creates the database to store price history if it doesn't exist
 app.run(host="0.0.0.0", port=80)
