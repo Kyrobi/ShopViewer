@@ -5,17 +5,40 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
     <title>Balls Website</title>
 </head>
 
 <body>
 
-    <p>Balls</p>
-
     <form action="/" method="post">
         <p>Name: </p>
         <input type="text" placeholder="Item name" name="itemInput"/>
     </form>
+
+
+    <p style="text-align:center">{{ itemName }}</p>
+    <div>
+        <canvas id="myChart" width="400" height="100"></canvas>
+      </div>
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   <script>
+   const ctx = document.getElementById('myChart').getContext('2d');
+   const myChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+          labels: {{ times | safe}}, 
+          datasets: [{
+              label: 'Price History',
+              data: {{ prices | safe}}, // Data on Y axis
+              borderWidth: 1,
+              borderColor: "rgb(75, 192, 192)",
+              fill: false,
+              lineTension: 0.1
+          }]
+      }
+   });
+   </script>
 
     <table>
 

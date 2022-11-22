@@ -75,14 +75,3 @@ def getAveragePriceForItem(itemName, listOfAllItems):
     averagePrice = sumPrice / counter
     return round(averagePrice, 2) # Round to 2 decimal places
             
-    
-# Loop over the unique items list, and find the lowest, highest, and average price for items. Use objects
-# getUniqueItemPrice
-
-# Loop over the UniqueItemPrices, and store them into a sqlite database
-
-# Fetch the data from the database and display it
-
-# Search function to find data of individual items
-
-# Validate item name function to clean and convert it to proper database query string

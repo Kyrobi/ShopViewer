@@ -13,6 +13,7 @@ import re
 from LoadItemList import setUniqueItems
 from GetItemPrice import populatePrice
 from PriceHistory import createDatabase as createPriceHistoryDatabase
+from PriceHistory import getPriceHistoryForItem
 
 # Own variables
 from LoadItemList import listOfItems
@@ -122,12 +123,25 @@ def item(item):
     for i in listOfItemPrices:
         if re.search(item, i.getName(), re.IGNORECASE): # Deal with casing
             foundItems.append(i)
+            
+            
+    times, prices = getPriceHistoryForItem(item)
+    
+    for i in times:
+        print(i)
+        
+    for i in prices:
+        print(i)
     
     
     return render_template("displayitem.html",
-                        foundItems=foundItems
+                        foundItems=foundItems,
+                        itemName=item,
+                        times=times,
+                        prices=prices
                         )
 
 checkDatabaseQuery() # Populate the database on page load
 createPriceHistoryDatabase() # Creates the database to store price history if it doesn't exist
+# priceCheckScheduler()
 app.run(host="0.0.0.0", port=80)
