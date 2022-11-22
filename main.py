@@ -1,6 +1,5 @@
 # Third part libraries
-from flask import Flask
-from flask import render_template # used to interface with html
+from flask import Flask, render_template, request, redirect, url_for
 import mysql.connector
 
 # Included libraries
@@ -8,6 +7,7 @@ import time
 import sys
 import config
 import logging
+import re
 
 # Own functions
 from LoadItemList import setUniqueItems
@@ -20,14 +20,12 @@ from LoadItemList import listOfItemPrices
 
 
 app = Flask(__name__)
+app.static_folder = 'static'
 
 # Don't log HTTP requests in console
-log = logging.getLogger('werkzeug') # Get Flask's logger
-log.setLevel(logging.ERROR)
+# log = logging.getLogger('werkzeug') # Get Flask's logger
+# log.setLevel(logging.ERROR)
 
-highestPrice = 0
-lowestPrice = 0 
-averagePrice = 0
 
 # Keeping track of when to refresh database
 NUMBER_OF_SECONDS_IN_DAY = 86400
@@ -98,23 +96,36 @@ def checkDatabaseQuery():
     
         
 
-@app.route("/")
+@app.route("/", methods=["POST", "GET"])
 def index():
     checkDatabaseQuery()
     
-    # print("\nUnique Items: ", listOfItems)
-    
-    # for i in listOfAllItems:
-    #     print("\nAll Items: ",i.getName(), "  Price: ", i.getPrice())
-    print("Printing price")
-    for i in listOfItemPrices:
-        print("Item name: ", i.getName(), "  Lowest Price: ", i.getLowestPrice(), " Highest Price: ", i.getHighestPrice())
+    # print("Printing price")
+    # for i in listOfItemPrices:
+    #     print("Item name: ", i.getName(), "  Lowest Price: ", i.getLowestPrice(), " Highest Price: ", i.getHighestPrice())
         
-    return render_template("index.html",
-                        highestPrice=highestPrice,
-                        lowestPrice=lowestPrice,
-                        averagePrice=averagePrice,
-                        listOfItemPrices=listOfItemPrices
+    if request.method == "POST":
+        item = request.form["itemInput"]
+        print("Input: ", item)
+        return redirect(url_for("item", item=item)) # First arg is the function name. Second arg is the parameter for the function
+    else:
+        return render_template("index.html")
+    
+    
+@app.route("/<item>", methods=["POST", "GET"])
+def item(item):
+    
+    foundItems = []
+    
+    print("Trying to find:", item) 
+    
+    for i in listOfItemPrices:
+        if re.search(item, i.getName(), re.IGNORECASE): # Deal with casing
+            foundItems.append(i)
+    
+    
+    return render_template("displayitem.html",
+                        foundItems=foundItems
                         )
 
 checkDatabaseQuery() # Populate the database on page load

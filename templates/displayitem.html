@@ -10,14 +10,14 @@
 
 <body>
 
+    <p>Balls</p>
 
-    <form action="#" method="post">
+    <form action="/" method="post">
         <p>Name: </p>
         <input type="text" placeholder="Item name" name="itemInput"/>
     </form>
 
-
-    <!-- <table>
+    <table>
 
         <tr>
             <th>Item Name</th>
@@ -27,7 +27,7 @@
         </tr>
 
 
-        {% for row in listOfItemPrices %}
+        {% for row in foundItems %}
         <tr>
             <td>{{row.getName()}}</td>
             <td>${{row.getLowestPrice()}}</td>
@@ -37,7 +37,7 @@
         {% endfor %}
         
 
-    </table> -->
+    </table>
 
 </body>
 </html>

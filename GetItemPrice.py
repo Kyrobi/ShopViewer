@@ -31,14 +31,15 @@ def populatePrice():
     
     # Loop through the unique list to see which items we need to calculate for
     for i in listOfItems:
-        highestPrice = getHighestPrice(i, listOfAllItems)
-        lowestPrice = getLowestPrice(i, listOfAllItems)
+        highestPrice = getHighestPriceForItem(i, listOfAllItems)
+        lowestPrice = getLowestPriceForItem(i, listOfAllItems)
+        averagePrice = getAveragePriceForItem(i, listOfAllItems)
         
-        item = ItemPrice(i ,lowestPrice, 0, highestPrice)
+        item = ItemPrice(i ,lowestPrice, averagePrice, highestPrice)
         listOfItemPrices.add(item)
     
     
-def getHighestPrice(itemName, listOfAllItems):
+def getHighestPriceForItem(itemName, listOfAllItems):
     highestValue = -sys.maxsize - 1 
     
     for i in listOfAllItems:
@@ -50,7 +51,7 @@ def getHighestPrice(itemName, listOfAllItems):
 
         
 
-def getLowestPrice(itemName, listOfAllItems):
+def getLowestPriceForItem(itemName, listOfAllItems):
     lowestValue = sys.maxsize
         
     for i in listOfAllItems:
@@ -61,8 +62,19 @@ def getLowestPrice(itemName, listOfAllItems):
     return lowestValue
         
     
-def getAveragePrice(itemName, listOfAllItems):
-    print("sd") 
+def getAveragePriceForItem(itemName, listOfAllItems):
+    
+    sumPrice = 0
+    counter = 0
+    
+    for i in listOfAllItems:
+        if i.getName() == itemName:
+            sumPrice += i.getPrice()
+            counter += 1
+            
+    averagePrice = sumPrice / counter
+    return round(averagePrice, 2) # Round to 2 decimal places
+            
     
 # Loop over the unique items list, and find the lowest, highest, and average price for items. Use objects
 # getUniqueItemPrice
