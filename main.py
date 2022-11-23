@@ -149,20 +149,34 @@ def item(item):
     if item == "favicon.ico":
         return render_template("displayitem.html")
     
-    print("Trying to find:", item) 
     
     for i in listOfItemPrices:
-        if re.search(item, i.getName(), re.IGNORECASE): # Deal with casing
+        # if re.search(item, i.getName(), re.IGNORECASE): # Deal with casing
+        if (i.getName() == item) or (i.getName() == str(item) + " "):
             foundItems.append(i)
-            
-            
-    times, prices = getPriceHistoryForItem(item)
     
-    for i in times:
-        print(i)
+    # If no result, so need to even check the getPriceHistoryForItem function         
+    if len(foundItems) == 0:
+        times = 0
+        prices = 0
+        item = item + " does not exist"
+        return render_template("displayitem.html",
+                        foundItems=foundItems,
+                        itemName=item,
+                        times=times,
+                        prices=prices,
+                        listOfItems=listOfItems
+                        )
         
-    for i in prices:
-        print(i)
+        
+    else:        
+        times, prices = getPriceHistoryForItem(item)
+    
+    # for i in times:
+    #     print(i)
+        
+    # for i in prices:
+    #     print(i)
     
     
     return render_template("displayitem.html",

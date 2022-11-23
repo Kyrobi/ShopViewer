@@ -31,8 +31,8 @@ def updateData():
 
 # Write the average price of the item to the database
 def addToDB(itemName):
-    connnection = sqlite3.connect("Price.db")
-    cursor = connnection.cursor()
+    connection = sqlite3.connect("Price.db")
+    cursor = connection.cursor()
     
     #currenttime = int(time.time())
     currenttime = datetime.datetime.now().date()
@@ -41,7 +41,8 @@ def addToDB(itemName):
     
     cursor.execute("INSERT INTO price_history (name, time, price) VALUES (?,?,?);", (itemName, currenttime, averagePrice))
     
-    connnection.commit()
+    connection.commit()
+    connection.close()
     
 
 # Returns a tuple for all the item's price
