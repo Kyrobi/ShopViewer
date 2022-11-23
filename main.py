@@ -8,12 +8,15 @@ import sys
 import config
 import logging
 import re
+import schedule
+import os.path
+import sqlite3
+import threading
 
 # Own functions
 from LoadItemList import setUniqueItems
 from GetItemPrice import populatePrice
-from PriceHistory import createDatabase as createPriceHistoryDatabase
-from PriceHistory import getPriceHistoryForItem
+from PriceHistory import getPriceHistoryForItem, priceCheckScheduler
 
 # Own variables
 from LoadItemList import listOfItems
@@ -39,17 +42,35 @@ userRequests = []
 class User:
     def __init__(self, time):
         self.time = time
+        
+        
+        
+def createPriceHistoryDatabase():
+    # Create a new database it one doesn't exists
+    if not os.path.isfile("Price.db"):
+        print("Database file doesn't exit. Creating a new one")
+        connnection = sqlite3.connect("Price.db")
+        cursor = connnection.cursor()
+        
+        cursor.execute(
+            '''
+            CREATE TABLE IF NOT EXISTS 
+            price_history (rowid INTEGER PRIMARY KEY AUTOINCREMENT, name TINYTEXT, time DATE, price INTEGER);
+            ''')  
+    else:
+        print("Database file already exists") 
 
-db = mysql.connector.connect(
+
+def getDatabase():
+    
+    db = mysql.connector.connect(
     host=config.HOST,
     database=config.DATABASE,
     user=config.USER,
     passwd=config.PASSWD
-)
-
-cursor = db.cursor()
-
-def getDatabase():
+    )
+    
+    cursor = db.cursor()
     
     # Fetches all the items being sold and puts them into list
     # cursor.execute("SELECT itemConfig FROM s10829_QuickShop.shops LIMIT 10")
@@ -60,8 +81,11 @@ def getDatabase():
         shopList.append(shop)
         # print("\n",shop)
         
+    db.close()
+        
     setUniqueItems(shopList)
     populatePrice()
+    
     
     #print("List length:", len(listOfItems))
     
@@ -107,16 +131,23 @@ def index():
         
     if request.method == "POST":
         item = request.form["itemInput"]
+        
+        if item == "favicon.ico":
+           return render_template("index.html", listOfItems=listOfItems) 
+       
         print("Input: ", item)
         return redirect(url_for("item", item=item)) # First arg is the function name. Second arg is the parameter for the function
     else:
-        return render_template("index.html")
+        return render_template("index.html", listOfItems=listOfItems)
     
     
 @app.route("/<item>", methods=["POST", "GET"])
 def item(item):
     
     foundItems = []
+    
+    if item == "favicon.ico":
+        return render_template("displayitem.html")
     
     print("Trying to find:", item) 
     
@@ -138,10 +169,31 @@ def item(item):
                         foundItems=foundItems,
                         itemName=item,
                         times=times,
-                        prices=prices
+                        prices=prices,
+                        listOfItems=listOfItems
                         )
 
 checkDatabaseQuery() # Populate the database on page load
-createPriceHistoryDatabase() # Creates the database to store price history if it doesn't exist
-# priceCheckScheduler()
+createPriceHistoryDatabase()
+
+def updatePriceScheduler():
+    getDatabase()
+    print("getDataase")
+    priceCheckScheduler()
+    print("priceCheckScheduler")
+    
+schedule.every(6).hours.do(updatePriceScheduler)
+# schedule.every(10).seconds.do(updatePriceScheduler)
+
+def updateScheduleTimer():
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
+
+schedule.run_pending()
+
+x = threading.Thread(target=updateScheduleTimer)
+x.daemon = True
+x.start()
+
 app.run(host="0.0.0.0", port=80)

@@ -10,10 +10,14 @@
 
 <body>
 
-
     <form action="#" method="post">
         <p>Name: </p>
-        <input type="text" placeholder="Item name" name="itemInput"/>
+        <input autocomplete="off" list="validItems" type="text" placeholder="Item name" name="itemInput" />
+        <datalist id="validItems">
+            {% for row in listOfItems %}
+            <option value="{{row}}">
+            {% endfor %}
+        </datalist>
     </form>
 
 
