@@ -16,7 +16,7 @@
     <div class="flexbox-container2">
         <div class="flexbox-item-textbox">
             <form action="/" method="post">
-                <input id="textbox" autocomplete="off" list="validItems" type="text" placeholder="Search item" name="itemInput" maxlength="4"/>
+                <input id="textbox" autocomplete="off" list="validItems" type="text" placeholder="Search item" name="itemInput"/>
                 <datalist id="validItems">
                     {% for row in listOfItems %}
                     <option value="{{row}}">
