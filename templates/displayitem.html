@@ -11,14 +11,20 @@
 
 <body>
 
-    <form action="/" method="post">
-        <input id="textbox" autocomplete="off" list="validItems" type="text" placeholder="Search item" name="itemInput" maxlength="4"/>
-        <datalist id="validItems">
-            {% for row in listOfItems %}
-            <option value="{{row}}">
-            {% endfor %}
-        </datalist>
-    </form>
+
+
+    <div class="flexbox-container2">
+        <div class="flexbox-item-textbox">
+            <form action="/" method="post">
+                <input id="textbox" autocomplete="off" list="validItems" type="text" placeholder="Search item" name="itemInput" maxlength="4"/>
+                <datalist id="validItems">
+                    {% for row in listOfItems %}
+                    <option value="{{row}}">
+                    {% endfor %}
+                </datalist>
+            </form>
+        </div>
+    </div>
 
 
     <p style="text-align:center; color: white;">{{ itemName }}</p>
@@ -68,7 +74,7 @@
       data: {
           labels: {{ times | safe}}, 
           datasets: [{
-              label: 'Price History',
+              label: 'Average Price History',
               backgroundColor: "#fff",
               data: {{ prices | safe}}, // Data on Y axis
               borderWidth: 1,
@@ -88,7 +94,8 @@
         scales: {
             yAxes: [{
                 ticks: {
-                    fontColor: 'whtie'
+                    fontColor: 'whtie',
+                    beginAtZero: true
                 },
             }],
           xAxes: [{
