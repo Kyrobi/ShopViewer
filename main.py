@@ -149,6 +149,9 @@ def item(item):
     if item == "favicon.ico":
         return render_template("displayitem.html")
     
+    item = (str(item)).rstrip()
+    item = item + " "
+    
     
     for i in listOfItemPrices:
         # if re.search(item, i.getName(), re.IGNORECASE): # Deal with casing
@@ -169,7 +172,7 @@ def item(item):
                         )
         
         
-    else:        
+    else:     
         times, prices = getPriceHistoryForItem(item)
     
     # for i in times:
