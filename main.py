@@ -213,4 +213,5 @@ x = threading.Thread(target=updateScheduleTimer)
 x.daemon = True
 x.start()
 
-app.run(host="0.0.0.0", port=80)
+if __name__ == '__main__':
+    app.run(host="0.0.0.0", port=25580)

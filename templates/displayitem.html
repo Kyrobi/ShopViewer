@@ -6,14 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
-    <title>Balls Website</title>
+    <title>Cynagen Shop Viewer</title>
 </head>
 
 <body>
 
     <form action="/" method="post">
-        <p>Name: </p>
-        <input autocomplete="off" list="validItems" type="text" placeholder="Item name" name="itemInput"/>
+        <input id="textbox" autocomplete="off" list="validItems" type="text" placeholder="Search item" name="itemInput" maxlength="4"/>
         <datalist id="validItems">
             {% for row in listOfItems %}
             <option value="{{row}}">
@@ -22,11 +21,46 @@
     </form>
 
 
-    <p style="text-align:center">{{ itemName }}</p>
-    <div>
-        <canvas id="myChart" width="400" height="100"></canvas>
-      </div>
-      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <p style="text-align:center; color: white;">{{ itemName }}</p>
+
+
+
+    <div class="flexbox-container3">
+
+
+        <div class="flexbox-item-graph">
+            <div>
+                <canvas id="myChart" width="400" height="100"></canvas>
+            </div>
+        </div>
+
+
+
+        <div class="flexbox-item-price">
+            <table style="color: white; text-align: center; margin: 0 auto;">
+                <tr>
+                    <th>Item Name</th>
+                    <th>Lowest</th>
+                    <th>Average</th>
+                    <th>Highest</th>
+                </tr>
+
+    
+                {% for row in foundItems %}
+                <tr>
+                    <td>{{row.getName()}}</td>
+                    <td>${{row.getLowestPrice()}}</td>
+                    <td>${{row.getAveragePrice()}}</td>
+                    <td>${{row.getHighestPrice()}}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+    </div>
+
+
+
    <script>
    const ctx = document.getElementById('myChart').getContext('2d');
    const myChart = new Chart(ctx, {
@@ -35,6 +69,7 @@
           labels: {{ times | safe}}, 
           datasets: [{
               label: 'Price History',
+              backgroundColor: "#fff",
               data: {{ prices | safe}}, // Data on Y axis
               borderWidth: 1,
               borderColor: "rgb(75, 192, 192)",
@@ -43,40 +78,33 @@
           }]
       },
 
-    
+
+      options: {
+        legend: {
+             labels: {
+                  fontColor: 'white'
+                 }
+              },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    fontColor: 'whtie'
+                },
+            }],
+          xAxes: [{
+                ticks: {
+                    fontColor: 'white'
+                },
+            }]
+        } 
+    }
+
+
+
    });
    </script>
 
-    <table>
 
-        <tr>
-            <th>Item Name</th>
-            <th>Lowest Price</th>
-            <th>Average Price</th>
-            <th>Highest Price</th>
-        </tr>
-
-        {% for row in foundItems %}
-        <tr>
-            <td>{{row.getName()}}</td>
-            <td>${{row.getLowestPrice()}}</td>
-            <td>${{row.getAveragePrice()}}</td>
-            <td>${{row.getHighestPrice()}}</td>
-        </tr>
-        {% endfor %}
-
-
-        <!-- {% for row in foundItems %}
-        <tr>
-            <td>{{row.getName()}}</td>
-            <td>${{row.getLowestPrice()}}</td>
-            <td>${{row.getAveragePrice()}}</td>
-            <td>${{row.getHighestPrice()}}</td>
-        </tr>
-        {% endfor %} -->
-        
-
-    </table>
 
 </body>
 </html>

@@ -69,7 +69,7 @@ def getPriceHistoryForItem(itemName):
     for i in cursor:
         prices.append(i[1])
         times.append(i[0])
-        print(i)
+        # print(i)
         
     connection.close()
         
