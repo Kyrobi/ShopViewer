@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+    <title>Cynagen Price Viewer</title>
+</head>
+
+<body>
+
+
+
+    <div class="flexbox-container2">
+        <div class="flexbox-item-textbox">
+            <form action="/" method="post">
+                <input id="textbox" autocomplete="off" list="validItems" type="text" placeholder="Search item" name="itemInput"/>
+                <datalist id="validItems">
+                    {% for row in listOfItems %}
+                    <option value="{{row}}">
+                    {% endfor %}
+                </datalist>
+            </form>
+        </div>
+    </div>
+
+
+    <p style="text-align:center; color: white;">{{ itemName }}</p>
+
+
+
+    <div class="flexbox-container3">
+
+
+        <div class="flexbox-item-graph">
+            <div>
+                <canvas id="myChart" width="400" height="100"></canvas>
+            </div>
+        </div>
+
+
+
+        <div class="flexbox-item-price">
+            <p style="color: white; text-align: center;">These are the lowest, average, and highest prices</p>
+            <p style="color: white; text-align: center;">in the past 90 days.</p>
+            <table style="color: white; text-align: center; margin: 0 auto;">
+                <tr>
+                    <th>Item Name</th>
+                    <th>Lowest</th>
+                    <th>Average</th>
+                    <th>Highest</th>
+                </tr>
+
+    
+                <tr>
+                    <td>{{itemName}}</td>
+                    <td>${{lowestValue}}</td>
+                    <td>${{averagePriceIn90Days}}</td>
+                    <td>${{highestValue}}</td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+
+
+
+   <script>
+   const ctx = document.getElementById('myChart').getContext('2d');
+   const myChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+          labels: {{ times | safe}}, 
+          datasets: [{
+              label: 'Average Price History',
+              backgroundColor: "#fff",
+              data: {{ prices | safe}}, // Data on Y axis
+              borderWidth: 1,
+              borderColor: "rgb(75, 192, 192)",
+              fill: false,
+              lineTension: 0.1,
+          }]
+      },
+
+
+      options: {
+        legend: {
+             labels: {
+                  fontColor: 'white'
+                 }
+              },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    fontColor: 'whtie',
+                    beginAtZero: true
+                },
+            }],
+          xAxes: [{
+                ticks: {
+                    fontColor: 'white'
+                },
+            }]
+        } 
+    }
+
+
+
+   });
+   </script>
+
+
+
+</body>
+</html>
