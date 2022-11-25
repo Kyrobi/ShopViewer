@@ -267,7 +267,9 @@ def updateScheduleTimer():
     while True:
         schedule.run_pending()
         time.sleep(1)
+        
+updateScheduleTimer()
 
-x = threading.Thread(target=updateScheduleTimer)
-x.daemon = True
-x.start()
+# x = threading.Thread(target=updateScheduleTimer)
+# x.daemon = True
+# x.start()

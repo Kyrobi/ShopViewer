@@ -15,7 +15,7 @@ app.static_folder = 'static'
 # log.setLevel(logging.ERROR)
 
         
-listOfItems = []
+listOfItems = set()
 
 def getListOfItems():
     print("Getting list of items...")
@@ -33,7 +33,7 @@ def getListOfItems():
     
     # (time, price)
     for i in cursor:
-        listOfItems.append(i[0])
+        listOfItems.add(i[0])
         
     connection.close()
     print("Finished getting list of items...")
@@ -70,6 +70,8 @@ def getPriceHistoryForItem(itemName):
 
 @app.route("/", methods=["POST", "GET"])
 def index():
+    
+    print("User connected to site...")
     
     # print("Printing price")
     # for i in listOfItemPrices:
@@ -118,7 +120,7 @@ def item(item):
             if i < lowestValue:
                 lowestValue = i
             
-        averagePriceIn90Days = sumPrice / len(prices)
+        averagePriceIn90Days = round(sumPrice / len(prices), 2)
         
         
         return render_template("displayitem.html",
