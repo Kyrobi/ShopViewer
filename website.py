@@ -2,6 +2,8 @@
 from flask import Flask, render_template, request, redirect, url_for
 import mysql.connector
 
+from naughty_string_validator import *
+
 # Included libraries
 import time, schedule, sqlite3, threading, datetime, logging, sys, string
 
@@ -45,7 +47,7 @@ def getPriceHistoryForItem(itemName):
     cursor = connection.cursor()
     
     # Debug
-    # connection.set_trace_callback(print)
+    connection.set_trace_callback(print)
     
     currentTime = datetime.datetime.now().date()
     pastTime = datetime.datetime.now() - datetime.timedelta(90)
@@ -71,7 +73,7 @@ def getPriceHistoryForItem(itemName):
 @app.route("/", methods=["POST", "GET"])
 def index():
     
-    print("User connected to site...")
+    # print("User connected to site...")
     
     # print("Printing price")
     # for i in listOfItemPrices:
@@ -96,9 +98,30 @@ def item(item):
     if item == "favicon.ico":
         return render_template("displayitem.html")
     
-    item = (str(item)).rstrip()
+    
+    if item in get_naughty_string_list():
+        item = "Illegal input"
+        averagePriceIn90Days = "?"
+        lowestValue = "?"
+        highestValue = "?"
+        times = 0
+        prices = 0
+        print("Illegal string detected...")
+        return render_template("displayitem.html",
+                            itemName=item,
+                            times=times,
+                            prices=prices,
+                            listOfItems=listOfItems,
+                            averagePriceIn90Days=averagePriceIn90Days,
+                            highestValue=highestValue,
+                            lowestValue=lowestValue,
+                            )
+    
+    item = (str(item)).rstrip().lstrip()
     item = string.capwords(item)
     item = item + " "
+    
+    print("[" + str(datetime.datetime.now()) + "] Finding [" + item + "]")
     
     if item in listOfItems: 
         times, prices = getPriceHistoryForItem(item)

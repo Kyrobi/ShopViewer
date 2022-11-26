@@ -166,7 +166,8 @@ def makeProper(itemName):
         for i in splitString:
             StringBuilder += (i.capitalize() + " ")
         
-        return "Enchanted Book - " + StringBuilder
+        return "Enchanted Book -" + StringBuilder
+    
         
         
 
@@ -259,10 +260,10 @@ def addToDB(itemName):
     connection.close()
 
 createPriceHistoryDatabase() # Creates the database if it doesn't exist
-# getDatabase()
+getDatabase()
 
 # Schdules to update the database every 6 hours
-schedule.every(12).hours.do(getDatabase)
+# schedule.every(12).hours.do(getDatabase)
 def updateScheduleTimer():
     while True:
         schedule.run_pending()
