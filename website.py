@@ -52,7 +52,12 @@ def getPriceHistoryForItem(itemName):
     currentTime = datetime.datetime.now().date()
     pastTime = datetime.datetime.now() - datetime.timedelta(90)
     
-    cursor.execute("SELECT time,price FROM price_history WHERE time BETWEEN ? AND ? AND name=?;", (pastTime.date(), currentTime, itemName))
+    # If the item no longer shows up due to it being >90 days and no one selling it, we still try to fetch the data for it without the time parameters
+    # Since those data still exists and we don't want to just not show them anymore
+    if itemName in listOfItems:
+        cursor.execute("SELECT time,price FROM price_history WHERE time BETWEEN ? AND ? AND name=?;", (pastTime.date(), currentTime, itemName))
+    else:
+        cursor.execute("SELECT time,price FROM price_history WHERE name=?;", (itemName))
     
     prices = []
     times = []
