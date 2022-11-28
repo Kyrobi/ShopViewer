@@ -55,7 +55,7 @@ def getPriceHistoryForItem(itemName):
     if itemName in listOfItems:
         cursor.execute("SELECT time,price FROM price_history WHERE time BETWEEN ? AND ? AND name=?;", (pastTime.date(), currentTime, itemName))
     else:
-        cursor.execute("SELECT time,price FROM price_history WHERE name=?;", (itemName))
+        cursor.execute("SELECT time,price FROM price_history WHERE name=?;", (itemName,))
     
     prices = []
     times = []
