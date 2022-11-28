@@ -2,8 +2,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 import mysql.connector
 
-from naughty_string_validator import *
-
 # Included libraries
 import time, schedule, sqlite3, threading, datetime, logging, sys, string
 
@@ -104,64 +102,16 @@ def item(item):
         return render_template("displayitem.html")
     
     
-    if item in get_naughty_string_list():
-        item = "Illegal input"
-        averagePriceIn90Days = "?"
-        lowestValue = "?"
-        highestValue = "?"
-        times = 0
-        prices = 0
-        print("Illegal string detected...")
-        return render_template("displayitem.html",
-                            itemName=item,
-                            times=times,
-                            prices=prices,
-                            listOfItems=listOfItems,
-                            averagePriceIn90Days=averagePriceIn90Days,
-                            highestValue=highestValue,
-                            lowestValue=lowestValue,
-                            )
-    
     item = (str(item)).rstrip().lstrip()
     item = string.capwords(item)
     item = item + " "
     
     print("[" + str(datetime.datetime.now()) + "] Finding [" + item + "]")
     
-    if item in listOfItems: 
-        times, prices = getPriceHistoryForItem(item)
-        
-        # Find the average prices of items in the past 30 days
-        sumPrice = 0
-        
-        highestValue = -sys.maxsize - 1 
-        lowestValue = sys.maxsize
-        
-        for i in prices:
-            sumPrice += i
-            
-            # Get highest price
-            if i > highestValue:
-                highestValue = i
-                
-            # Get lowest price
-            if i < lowestValue:
-                lowestValue = i
-            
-        averagePriceIn90Days = round(sumPrice / len(prices), 2)
-        
-        
-        return render_template("displayitem.html",
-                            itemName=item,
-                            times=times,
-                            prices=prices,
-                            listOfItems=listOfItems,
-                            averagePriceIn90Days=averagePriceIn90Days,
-                            highestValue=highestValue,
-                            lowestValue=lowestValue,
-                            )
+    # if item in listOfItems: 
+    times, prices = getPriceHistoryForItem(item)
     
-    else:
+    if len(times) == 0:
         item = item + " does not exist"
         averagePriceIn90Days = "?"
         lowestValue = "?"
@@ -177,6 +127,37 @@ def item(item):
                             highestValue=highestValue,
                             lowestValue=lowestValue,
                             )
+    
+    # Find the average prices of items in the past 30 days
+    sumPrice = 0
+    
+    highestValue = -sys.maxsize - 1 
+    lowestValue = sys.maxsize
+    
+    for i in prices:
+        sumPrice += i
+        
+        # Get highest price
+        if i > highestValue:
+            highestValue = i
+            
+        # Get lowest price
+        if i < lowestValue:
+            lowestValue = i
+        
+    averagePriceIn90Days = round(sumPrice / len(prices), 2)
+    
+    
+    return render_template("displayitem.html",
+                        itemName=item,
+                        times=times,
+                        prices=prices,
+                        listOfItems=listOfItems,
+                        averagePriceIn90Days=averagePriceIn90Days,
+                        highestValue=highestValue,
+                        lowestValue=lowestValue,
+                        )
+
     
 
 getListOfItems()
