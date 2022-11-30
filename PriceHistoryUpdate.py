@@ -263,7 +263,7 @@ createPriceHistoryDatabase() # Creates the database if it doesn't exist
 getDatabase()
 
 # Schdules to update the database every 6 hours
-# schedule.every(12).hours.do(getDatabase)
+schedule.every(12).hours.do(getDatabase)
 def updateScheduleTimer():
     while True:
         schedule.run_pending()
