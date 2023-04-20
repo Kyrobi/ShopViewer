@@ -1,5 +1,6 @@
 import sys, config, sqlite3, datetime, os.path, schedule, time, threading
 import mysql.connector
+import statistics
 
 class ItemPrice:
     def __init__(self, name, lowestPrice, averagePrice, highestPrice):
@@ -218,14 +219,18 @@ def getAveragePriceForItem(itemName, listOfAllItems):
     
     sumPrice = 0
     counter = 0
+
+    data1 = []
     
     for i in listOfAllItems:
         if i.getName() == itemName:
-            sumPrice += i.getPrice()
-            counter += 1
+            data1.append(i.getPrice())
+            # sumPrice += i.getPrice()
+            # counter += 1
             
-    averagePrice = sumPrice / counter
-    return round(averagePrice, 2) # Round to 2 decimal places
+    # averagePrice = sumPrice / counter
+    medianPrice = statistics.median(data1)
+    return round(medianPrice, 2) # Round to 2 decimal places
 
 
 def createPriceHistoryDatabase():

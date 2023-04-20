@@ -113,7 +113,7 @@ def item(item):
     
     if len(times) == 0:
         item = item + " does not exist"
-        averagePriceIn90Days = "?"
+        averageMedianPriceIn90Days = "?"
         lowestValue = "?"
         highestValue = "?"
         times = 0
@@ -123,7 +123,7 @@ def item(item):
                             times=times,
                             prices=prices,
                             listOfItems=listOfItems,
-                            averagePriceIn90Days=averagePriceIn90Days,
+                            averageMedianPriceIn90Days=averageMedianPriceIn90Days,
                             highestValue=highestValue,
                             lowestValue=lowestValue,
                             )
@@ -145,7 +145,7 @@ def item(item):
         if i < lowestValue:
             lowestValue = i
         
-    averagePriceIn90Days = round(sumPrice / len(prices), 2)
+    averageMedianPriceIn90Days = round(sumPrice / len(prices), 2)
     
     
     return render_template("displayitem.html",
@@ -153,7 +153,7 @@ def item(item):
                         times=times,
                         prices=prices,
                         listOfItems=listOfItems,
-                        averagePriceIn90Days=averagePriceIn90Days,
+                        averageMedianPriceIn90Days=averageMedianPriceIn90Days,
                         highestValue=highestValue,
                         lowestValue=lowestValue,
                         )
